@@ -21,6 +21,18 @@ type SyllabusData = {
   projects?: Array<{ title: string; due_date: string; description?: string }>;
 };
 
+async function getApiErrorMessage(response: Response, fallback: string): Promise<string> {
+  const responseText = await response.text();
+  if (!responseText) return fallback;
+
+  try {
+    const errorJson = JSON.parse(responseText) as { error?: string; message?: string };
+    return errorJson.error || errorJson.message || fallback;
+  } catch {
+    return responseText || fallback;
+  }
+}
+
 export default function AppHomeClient() {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -68,7 +80,7 @@ export default function AppHomeClient() {
         body: formData,
       });
       if (!response.ok) {
-        throw new Error('Failed to process file');
+        throw new Error(await getApiErrorMessage(response, 'Failed to process file'));
       }
       const data = await response.json();
       setResult(data.result as SyllabusData);
@@ -98,7 +110,7 @@ export default function AppHomeClient() {
         body: formData,
       });
       if (!response.ok) {
-        throw new Error('Failed to generate humorous summary');
+        throw new Error(await getApiErrorMessage(response, 'Failed to generate humorous summary'));
       }
       const data = await response.json();
       setHumorousSummary(data.result);
@@ -113,7 +125,7 @@ export default function AppHomeClient() {
           body: JSON.stringify({ text: data.result }),
         });
         if (!audioResponse.ok) {
-          throw new Error('Failed to generate audio');
+          throw new Error(await getApiErrorMessage(audioResponse, 'Failed to generate audio'));
         }
         const audioBlob = await audioResponse.blob();
         const url = URL.createObjectURL(audioBlob);
@@ -202,5 +214,4 @@ export default function AppHomeClient() {
     </div>
   );
 }
-
 

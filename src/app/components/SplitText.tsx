@@ -1,5 +1,6 @@
 'use client';
 
+import type { CSSProperties, JSX } from 'react';
 import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -19,7 +20,7 @@ interface SplitTextProps {
   to?: Record<string, unknown>;
   threshold?: number;
   rootMargin?: string;
-  textAlign?: React.CSSProperties['textAlign'];
+  textAlign?: CSSProperties['textAlign'];
   tag?: keyof JSX.IntrinsicElements;
   onLetterAnimationComplete?: () => void;
 }

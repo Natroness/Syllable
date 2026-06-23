@@ -18,14 +18,24 @@ A Next.js application that automatically extracts assignments, exams, projects, 
 ### Prerequisites
 
 
-1. Get a Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Get an ElevenLabs API key from [ElevenLabs](https://elevenlabs.io/app/settings/api-keys)
-3. Create a `.env.local` file in the root directory with your API keys:
+1. Install and run [Ollama](https://ollama.com/) locally.
+2. Pull the models used for extraction and summaries:
 
 ```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
-ELEVENLABS_VOICE_ID=your_preferred_voice_id_here
+ollama pull llama3.1:8b
+```
+
+3. Get a Groq API key.
+4. Create a `.env.local` file in the root directory with your local AI and TTS settings:
+
+```bash
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_EXTRACTION_MODEL=llama3.1:8b
+OLLAMA_SUMMARY_MODEL=llama3.1:8b
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_TTS_MODEL=canopylabs/orpheus-v1-english
+GROQ_TTS_VOICE=hannah
+GROQ_TTS_RESPONSE_FORMAT=wav
 ```
 
 ### Installation

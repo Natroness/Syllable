@@ -36,6 +36,18 @@ type SyllabusData = {
   }>;
 };
 
+async function getApiErrorMessage(response: Response, fallback: string): Promise<string> {
+  const responseText = await response.text();
+  if (!responseText) return fallback;
+
+  try {
+    const errorJson = JSON.parse(responseText) as { error?: string; message?: string };
+    return errorJson.error || errorJson.message || fallback;
+  } catch {
+    return responseText || fallback;
+  }
+}
+
 export default function UploadPage() {
   // State management for file upload and processing
   const [file, setFile] = useState<File | null>(null);
@@ -118,13 +130,7 @@ export default function UploadPage() {
       });
       
       if (!resp.ok) {
-        try {
-          const errJson = await resp.json();
-          throw new Error(errJson?.error || 'Failed to process file');
-        } catch {
-          const errorText = await resp.text();
-          throw new Error(errorText || 'Failed to process file');
-        }
+        throw new Error(await getApiErrorMessage(resp, 'Failed to process file'));
       }
       
       const data = await resp.json();
@@ -184,7 +190,7 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate humorous summary');
+        throw new Error(await getApiErrorMessage(response, 'Failed to generate humorous summary'));
       }
 
       const data = await response.json();
@@ -202,15 +208,9 @@ export default function UploadPage() {
           body: JSON.stringify({ text: data.result }),
         });
         if (!audioResponse.ok) {
-          try {
-            const errJson = await audioResponse.json();
-            console.error('Audio generation failed:', errJson);
-            setError(errJson?.error || 'Audio generation failed');
-          } catch {
-            const errText = await audioResponse.text();
-            console.error('Audio generation failed:', errText);
-            setError(errText || 'Audio generation failed');
-          }
+          const audioError = await getApiErrorMessage(audioResponse, 'Audio generation failed');
+          console.error('Audio generation failed:', audioError);
+          setError(audioError);
           setTimeout(() => setError(''), 3000);
         } else {
           const audioBlob = await audioResponse.blob();
@@ -610,5 +610,4 @@ export default function UploadPage() {
     </div>
   );
 }
-
 

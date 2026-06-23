@@ -311,3 +311,9 @@ Icon
 *.msm
 *.msp
 *.lnk
+
+# Local planning docs (do not push to GitHub)
+BACKEND_DEVELOPMENT_PLAN.md
+PIPELINE_MIGRATION_PRIORITY_PLAN.md
+PROJECT_OVERVIEW.md
+
