@@ -3,6 +3,8 @@ import { toErrorResponse } from '@/server/http/api-error';
 import { validatePdfUpload } from '@/server/modules/files/pdf-upload';
 import { extractSyllabusFromPdf } from '@/server/modules/syllabi/syllabus-extraction.service';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const formData = await request.formData();

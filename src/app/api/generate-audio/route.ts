@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { toErrorResponse } from '@/server/http/api-error';
 import { generateAudioFromText } from '@/server/modules/audio/audio.service';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();

@@ -1,5 +1,5 @@
 import { env } from '@/server/config/env';
-import { serviceUnavailable } from '@/server/http/api-error';
+import { ApiError, serviceUnavailable } from '@/server/http/api-error';
 
 type OllamaGenerateInput = {
   model: string;
@@ -65,10 +65,24 @@ export async function generateWithOllama(input: OllamaGenerateInput): Promise<Ol
       durationMs: Date.now() - startedAt,
     };
   } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
     if (error instanceof Error && error.name === 'AbortError') {
       throw serviceUnavailable('Ollama request timed out', { model: input.model });
     }
-    throw error;
+
+    if (error instanceof TypeError) {
+      throw serviceUnavailable(`Cannot connect to Ollama at ${env.ollamaBaseUrl}. Make sure Ollama is running and OLLAMA_BASE_URL is correct.`, {
+        model: input.model,
+      });
+    }
+
+    throw serviceUnavailable('Ollama request failed', {
+      model: input.model,
+      providerMessage: error instanceof Error ? error.message : String(error),
+    });
   } finally {
     clearTimeout(timeout);
   }

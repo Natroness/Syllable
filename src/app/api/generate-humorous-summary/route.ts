@@ -3,6 +3,8 @@ import { toErrorResponse } from '@/server/http/api-error';
 import { validatePdfUpload } from '@/server/modules/files/pdf-upload';
 import { generateHumorousSummaryFromPdf } from '@/server/modules/summaries/summary.service';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const formData = await request.formData();

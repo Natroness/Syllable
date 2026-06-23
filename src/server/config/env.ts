@@ -22,4 +22,7 @@ export const env = {
   groqTtsVoice: process.env.GROQ_TTS_VOICE || 'hannah',
   groqTtsResponseFormat: process.env.GROQ_TTS_RESPONSE_FORMAT || 'wav',
   maxUploadBytes: readNumber('MAX_UPLOAD_MB', DEFAULT_MAX_UPLOAD_MB) * 1024 * 1024,
+  pdfOcrFallback: process.env.PDF_OCR_FALLBACK !== 'false',
+  tesseractPath: process.env.TESSERACT_PATH || 'tesseract',
+  ocrMaxPages: readNumber('OCR_MAX_PAGES', 5),
 };

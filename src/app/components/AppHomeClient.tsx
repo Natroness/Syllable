@@ -26,8 +26,24 @@ async function getApiErrorMessage(response: Response, fallback: string): Promise
   if (!responseText) return fallback;
 
   try {
-    const errorJson = JSON.parse(responseText) as { error?: string; message?: string };
-    return errorJson.error || errorJson.message || fallback;
+    const errorJson = JSON.parse(responseText) as {
+      error?: string;
+      message?: string;
+      details?: {
+        ocrMessage?: string;
+        parserMessage?: string;
+        providerMessage?: string;
+        code?: string;
+      };
+    };
+    const baseMessage = errorJson.error || errorJson.message || fallback;
+    const detailMessage =
+      errorJson.details?.ocrMessage ||
+      errorJson.details?.parserMessage ||
+      errorJson.details?.providerMessage ||
+      errorJson.details?.code;
+
+    return detailMessage ? `${baseMessage} ${detailMessage}` : baseMessage;
   } catch {
     return responseText || fallback;
   }
@@ -214,4 +230,3 @@ export default function AppHomeClient() {
     </div>
   );
 }
-

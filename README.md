@@ -36,6 +36,9 @@ GROQ_API_KEY=your_groq_api_key_here
 GROQ_TTS_MODEL=canopylabs/orpheus-v1-english
 GROQ_TTS_VOICE=hannah
 GROQ_TTS_RESPONSE_FORMAT=wav
+PDF_OCR_FALLBACK=true
+OCR_MAX_PAGES=5
+TESSERACT_PATH=tesseract
 ```
 
 ### Installation
