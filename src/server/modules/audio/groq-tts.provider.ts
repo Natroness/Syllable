@@ -6,6 +6,15 @@ export type GroqSpeechOutput = {
   contentType: string;
 };
 
+function parseGroqError(errorText: string): string {
+  try {
+    const parsed = JSON.parse(errorText) as { error?: { message?: string } };
+    return parsed.error?.message || errorText;
+  } catch {
+    return errorText;
+  }
+}
+
 function contentTypeForFormat(format: string): string {
   switch (format) {
     case 'mp3':
@@ -50,7 +59,7 @@ export async function generateGroqSpeech(text: string): Promise<GroqSpeechOutput
       const errorText = await response.text();
       throw serviceUnavailable('Audio generation failed', {
         status: response.status,
-        providerMessage: errorText.slice(0, 500),
+        providerMessage: parseGroqError(errorText).slice(0, 500),
       });
     }
 

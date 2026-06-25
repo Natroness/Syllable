@@ -21,6 +21,7 @@ export const env = {
   groqTtsModel: process.env.GROQ_TTS_MODEL || 'canopylabs/orpheus-v1-english',
   groqTtsVoice: process.env.GROQ_TTS_VOICE || 'hannah',
   groqTtsResponseFormat: process.env.GROQ_TTS_RESPONSE_FORMAT || 'wav',
+  groqTtsMaxInputChars: readNumber('GROQ_TTS_MAX_INPUT_CHARS', 900),
   maxUploadBytes: readNumber('MAX_UPLOAD_MB', DEFAULT_MAX_UPLOAD_MB) * 1024 * 1024,
   pdfOcrFallback: process.env.PDF_OCR_FALLBACK !== 'false',
   tesseractPath: process.env.TESSERACT_PATH || 'tesseract',

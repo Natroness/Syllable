@@ -76,7 +76,6 @@ export default function UploadPage() {
   const [allSyllabi, setAllSyllabi] = useState<SyllabusData[]>([]);
   
   // State for humorous summary
-  const [humorousSummary, setHumorousSummary] = useState<string>('');
   const [isGeneratingHumorous, setIsGeneratingHumorous] = useState<boolean>(false);
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const [audioUrl, setAudioUrl] = useState<string>('');
@@ -199,6 +198,9 @@ export default function UploadPage() {
     try {
       const formData = new FormData();
       formData.append('file', file);
+      if (result) {
+        formData.append('syllabus', JSON.stringify(result));
+      }
 
       const response = await fetch('/api/generate-humorous-summary', {
         method: 'POST',
@@ -210,7 +212,6 @@ export default function UploadPage() {
       }
 
       const data = await response.json();
-      setHumorousSummary(data.result);
 
       // Trigger audio generation and show bottom loading indicator
       setIsGeneratingAudio(true);
@@ -332,12 +333,6 @@ export default function UploadPage() {
           {audioUrl && !isGeneratingAudio && (
             <div style={{background:'#fff',border:'3px solid #000',borderRadius:12,boxShadow:'3px 3px 0 #000',padding:12}}>
               <audio controls src={audioUrl} style={{width:'100%'}} />
-            </div>
-          )}
-          {!!humorousSummary && (
-            <div style={{background:'#fff',border:'3px solid #000',borderRadius:'12px',boxShadow:'3px 3px 0 #000',padding:12,color:'#000'}}>
-              <div style={{fontWeight:800,marginBottom:6}}>Humorous Summary</div>
-              <div>{humorousSummary}</div>
             </div>
           )}
         </div>

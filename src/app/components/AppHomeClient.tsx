@@ -54,7 +54,6 @@ export default function AppHomeClient() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [result, setResult] = useState<SyllabusData | null>(null);
   const [error, setError] = useState<string>('');
-  const [humorousSummary, setHumorousSummary] = useState<string>('');
   const [isGeneratingHumorous, setIsGeneratingHumorous] = useState<boolean>(false);
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const [audioUrl, setAudioUrl] = useState<string>('');
@@ -121,6 +120,9 @@ export default function AppHomeClient() {
     try {
       const formData = new FormData();
       formData.append('file', file);
+      if (result) {
+        formData.append('syllabus', JSON.stringify(result));
+      }
       const response = await fetch('/api/generate-humorous-summary', {
         method: 'POST',
         body: formData,
@@ -129,7 +131,6 @@ export default function AppHomeClient() {
         throw new Error(await getApiErrorMessage(response, 'Failed to generate humorous summary'));
       }
       const data = await response.json();
-      setHumorousSummary(data.result);
       setIsGeneratingAudio(true);
       setAudioUrl('');
       try {
@@ -204,12 +205,6 @@ export default function AppHomeClient() {
               result={result as SyllabusData} 
               onGenerateHumorousSummary={handleGenerateHumorousSummary}
             />
-          )}
-          {humorousSummary && (
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow p-3 w-full text-sm text-gray-900 dark:text-gray-100">
-              <div className="font-semibold mb-1">Humorous Summary</div>
-              <p>{humorousSummary}</p>
-            </div>
           )}
           {isGeneratingAudio && (
             <div className="bg-gray-900 text-white rounded-md shadow px-4 py-2 text-sm flex items-center gap-2">
